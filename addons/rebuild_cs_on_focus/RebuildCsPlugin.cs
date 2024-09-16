@@ -35,7 +35,7 @@ public partial class RebuildCsPlugin : EditorPlugin
    {
       GetTree().Root.Connect(Window.SignalName.FocusEntered, new Callable(this, MethodName.RootOnFocusEntered));
 
-      GetEditorInterface()
+      EditorInterface.Singleton
          .GetResourceFilesystem()
          .Connect(EditorFileSystem.SignalName.ResourcesReload, new Callable(this, MethodName.OnResourcesReload));
    }
@@ -61,13 +61,13 @@ public partial class RebuildCsPlugin : EditorPlugin
    {
       if (!_rebuildEnabled) return;
       _scanning = true;
-      GetEditorInterface().GetResourceFilesystem().ScanSources();
+      EditorInterface.Singleton.GetResourceFilesystem().ScanSources();
    }
 
    public override void _Process(double delta)
    {
       if (!_scanning) return;
-      if (GetEditorInterface().GetResourceFilesystem().IsScanning()) return;
+      if (EditorInterface.Singleton.GetResourceFilesystem().IsScanning()) return;
       _scanning = false;
    }
 
@@ -97,7 +97,7 @@ public partial class RebuildCsPlugin : EditorPlugin
       node.QueueFree();
 
       var msBuildPanel = bottomBar.GetChildren()
-         .FirstOrDefault(c => c is VBoxContainer && c.HasMethod(_msBuildPanelBuildMethod));
+         .FirstOrDefault(c => c.HasMethod(_msBuildPanelBuildMethod));
 
       if (msBuildPanel != null)
       {
